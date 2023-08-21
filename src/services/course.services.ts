@@ -62,7 +62,7 @@ const registerUser = async (payload: UserCourseCreate) => {
 };
 
 const destroyRegisterUser = async (userId: number, courseId: number) => {
-  const queryTemplate: string = `UPDATE "userCourses" SET "active" = "false" WHERE "userId" = $1 AND "courseId" = $2;`;
+  const queryTemplate: string = `UPDATE "userCourses" SET "active" = FALSE WHERE "userId" = $1 AND "courseId" = $2;`;
   await client.query(queryTemplate, [userId, courseId]);
 };
 

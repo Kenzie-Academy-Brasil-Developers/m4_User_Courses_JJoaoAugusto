@@ -1,4 +1,5 @@
 import express, { Application, json } from "express";
+import "express-async-errors";
 import { courseRouter, sessionRouter, userRouter } from "./routers";
 import middlewares from "./middlewares";
 

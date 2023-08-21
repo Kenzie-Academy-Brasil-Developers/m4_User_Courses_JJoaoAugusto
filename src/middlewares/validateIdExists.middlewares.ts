@@ -29,7 +29,7 @@ const validateIdExists = async (
     );
 
     if (queryCourse.rowCount === 0) {
-      throw new AppError("Course not found", 404);
+      throw new AppError("User/course not found", 404);
     }
   }
 

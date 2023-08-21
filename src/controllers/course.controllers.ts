@@ -37,7 +37,7 @@ const destroyRegisterUser = async (
   const userId = Number(req.params.userId);
   const courseId = Number(req.params.courseId);
   await courseServices.destroyRegisterUser(userId, courseId);
-  return res.status(204);
+  return res.status(204).json();
 };
 
 export default { create, read, retrieve, registerUser, destroyRegisterUser };
