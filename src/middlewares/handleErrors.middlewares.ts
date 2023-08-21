@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AppError } from "../errors";
 import { z } from "zod";
-// import { JsonWebTokenError } from "jsonwebtoken";
+import { JsonWebTokenError } from "jsonwebtoken";
 
 const handleErrors = (
   error: Error,
@@ -17,9 +17,9 @@ const handleErrors = (
     return res.status(400).json({ error: error.errors });
   }
 
-  //   if (error instanceof JsonWebTokenError) {
-  //     return res.status(401).json({ error: error.message });
-  //   }
+  if (error instanceof JsonWebTokenError) {
+    return res.status(401).json({ error: error.message });
+  }
 
   console.error(error);
   return res.status(500).json({ message: "Internal server error" });

@@ -26,8 +26,18 @@ const registerUser = async (req: Request, res: Response): Promise<Response> => {
     courseId: courseId,
     active: true,
   };
-  const userCourse = await courseServices.registerUser(payload);
+  const userCourse: string = await courseServices.registerUser(payload);
   return res.status(201).json(userCourse);
 };
 
-export default { create, read, retrieve, registerUser };
+const destroyRegisterUser = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const userId = Number(req.params.userId);
+  const courseId = Number(req.params.courseId);
+  await courseServices.destroyRegisterUser(userId, courseId);
+  return res.status(204);
+};
+
+export default { create, read, retrieve, registerUser, destroyRegisterUser };

@@ -40,8 +40,13 @@ const retrieve = async (id: number) => {
   ON "c"."id" = "uc"."courseId" 
   WHERE "c"."id" = $1;
   `;
+
   const queryResult: UserCourseResult = await client.query(queryTemplate, [id]);
-  console.log(queryResult.rows);
+
+  if (queryResult.rowCount === 0) {
+    throw new AppError("No course found", 404);
+  }
+
   return queryResult.rows;
 };
 
@@ -51,13 +56,14 @@ const registerUser = async (payload: UserCourseCreate) => {
     Object.keys(payload),
     Object.values(payload)
   );
-  const queryResult = await client.query(queryFormat);
+  await client.query(queryFormat);
 
-  if (queryResult.rowCount === 0) {
-    throw new AppError("deu errado");
-  }
-
-  return queryResult.rows;
+  return "User successfully vinculed to course";
 };
 
-export default { create, read, retrieve, registerUser };
+const destroyRegisterUser = async (userId: number, courseId: number) => {
+  const queryTemplate: string = `UPDATE "userCourses" SET "active" = "false" WHERE "userId" = $1 AND "courseId" = $2;`;
+  await client.query(queryTemplate, [userId, courseId]);
+};
+
+export default { create, read, retrieve, registerUser, destroyRegisterUser };

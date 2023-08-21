@@ -4,6 +4,7 @@ import { client } from "../database";
 import { hash } from "bcryptjs";
 import { userReadSchema, userReturnSchema } from "../schemas";
 import { UserReturn } from "../interfaces";
+import { AppError } from "../errors";
 
 const create = async (payload: UserCreate): Promise<UserReturn> => {
   payload.password = await hash(payload.password, 10);
@@ -38,6 +39,11 @@ const retrieve = async (id: number) => {
   WHERE "u"."id" = $1;
     `;
   const queryResult = await client.query(queryTemplate, [id]);
+
+  if (queryResult.rowCount === 0) {
+    throw new AppError("No course found", 404);
+  }
+
   return queryResult.rows;
 };
 
