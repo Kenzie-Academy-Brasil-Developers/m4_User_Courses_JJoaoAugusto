@@ -27,10 +27,9 @@ courseRouter.post(
 
 courseRouter.post(
   "/:courseId/users/:userId",
-  middlewares.validateIdExists,
-  middlewares.validateBody(userCourseCreateSchema),
   middlewares.verifyToken,
   middlewares.verifyAdmin,
+  middlewares.validateIdExists,
   courseControllers.registerUser
 );
 

@@ -56,9 +56,9 @@ const registerUser = async (payload: UserCourseCreate) => {
     Object.keys(payload),
     Object.values(payload)
   );
-  await client.query(queryFormat);
+  const queryResult = await client.query(queryFormat);
 
-  return "User successfully vinculed to course";
+  return { message: "User successfully vinculed to course" };
 };
 
 const destroyRegisterUser = async (userId: number, courseId: number) => {

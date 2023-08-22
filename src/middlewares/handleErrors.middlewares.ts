@@ -13,12 +13,12 @@ const handleErrors = (
     return res.status(error.status).json({ message: error.message });
   }
 
-  if (error instanceof z.ZodError) {
-    return res.status(400).json({ error: error.errors });
+  if (error instanceof JsonWebTokenError) {
+    return res.status(401).json({ message: error.message });
   }
 
-  if (error instanceof JsonWebTokenError) {
-    return res.status(401).json({ error: error.message });
+  if (error instanceof z.ZodError) {
+    return res.status(400).json(error.flatten().fieldErrors);
   }
 
   console.error(error);

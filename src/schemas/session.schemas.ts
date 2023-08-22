@@ -1,8 +1,8 @@
-import { userSchema } from "./user.schemas";
+import { z } from "zod";
 
-const sessionCreate = userSchema.pick({
-  name: true,
-  password: true,
+const sessionCreate = z.object({
+  email: z.string().email().max(50),
+  password: z.string().max(120),
 });
 
 export { sessionCreate };

@@ -1,21 +1,22 @@
-import { compare } from "bcryptjs";
+import { compare, hash } from "bcryptjs";
 import { client } from "../database";
 import { AppError } from "../errors";
 import { SessionCreate, User, UserResult } from "../interfaces";
 import { SessionReturn } from "../interfaces/session.interfaces";
 import { sign } from "jsonwebtoken";
 
-const create = async (payload: SessionCreate): Promise<SessionReturn> => {
+const create = async (payload: SessionCreate): Promise<String> => {
   const query: UserResult = await client.query(
-    `SELECT * FROM "users" WHERE "name" = $1;`,
-    [payload.name]
+    `SELECT * FROM "users" WHERE "email" = $1;`,
+    [payload.email]
   );
 
-  if (query.rowCount === 0) {
+  const user: User = query.rows[0];
+
+  if (!user) {
     throw new AppError("Wrong email/password", 401);
   }
 
-  const user: User = query.rows[0];
   const samePassword: boolean = await compare(payload.password, user.password);
 
   if (!samePassword) {
@@ -23,12 +24,12 @@ const create = async (payload: SessionCreate): Promise<SessionReturn> => {
   }
 
   const token: string = sign(
-    { name: user.name, admin: user.admin },
+    { email: user.email, admin: user.admin },
     process.env.SECRET_KEY!,
-    { subject: user.id.toString(), expiresIn: process.env.EXPIRES_IN! }
+    { expiresIn: process.env.EXPIRES_IN!, subject: user.id.toString() }
   );
 
-  return { token };
+  return token;
 };
 
 export default { create };

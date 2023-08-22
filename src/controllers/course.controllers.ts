@@ -26,7 +26,9 @@ const registerUser = async (req: Request, res: Response): Promise<Response> => {
     courseId: courseId,
     active: true,
   };
-  const userCourse: string = await courseServices.registerUser(payload);
+  const userCourse: { message: string } = await courseServices.registerUser(
+    payload
+  );
   return res.status(201).json(userCourse);
 };
 

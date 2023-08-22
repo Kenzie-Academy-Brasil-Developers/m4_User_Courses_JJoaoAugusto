@@ -17,7 +17,7 @@ const validateEmailExists = async (
     [email]
   );
 
-  if (queryResult.rowCount !== 0) {
+  if (queryResult.rows[0]) {
     throw new AppError("Email already registered", 409);
   }
 

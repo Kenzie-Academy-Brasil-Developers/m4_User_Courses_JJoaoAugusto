@@ -1,10 +1,11 @@
 import format from "pg-format";
-import { User, UserCreate, UserRead, UserResult } from "../interfaces";
+import { UserCreate, UserRead, UserResult } from "../interfaces";
 import { client } from "../database";
 import { hash } from "bcryptjs";
 import { userReadSchema, userReturnSchema } from "../schemas";
 import { UserReturn } from "../interfaces";
 import { AppError } from "../errors";
+import { QueryResult } from "pg";
 
 const create = async (payload: UserCreate): Promise<UserReturn> => {
   payload.password = await hash(payload.password, 10);
@@ -13,7 +14,7 @@ const create = async (payload: UserCreate): Promise<UserReturn> => {
     Object.keys(payload),
     Object.values(payload)
   );
-  const queryResult = await client.query(queryFormat);
+  const queryResult: UserResult = await client.query(queryFormat);
   return userReturnSchema.parse(queryResult.rows[0]);
 };
 
@@ -35,10 +36,10 @@ const retrieve = async (id: number) => {
   JOIN "userCourses" AS "uc"
   ON "c"."id" = "uc"."courseId"
   JOIN  "users" AS "u"
-  ON "u"."id" = "uc"."courseId" 
+  ON "u"."id" = "uc"."userId" 
   WHERE "u"."id" = $1;
-    `;
-  const queryResult = await client.query(queryTemplate, [id]);
+  `;
+  const queryResult: QueryResult = await client.query(queryTemplate, [id]);
 
   if (queryResult.rowCount === 0) {
     throw new AppError("No course found", 404);
